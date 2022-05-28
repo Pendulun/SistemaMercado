@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+    <h1>Produtos</h1>
+
+    {% if myproducts %}
+        <table border="1">
+            <thead>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Marca</th>
+                <th>Preço</th>
+                <th>Estoque</th>
+                <th>Vendidos</th>
+            </thead>
+        {% for x in myproducts %}
+        <tr>
+        <td>{{ x.id }}</td>
+        <td>{{ x.name }}</td>
+        <td>{{ x.brand }}</td>
+        <td>{{ x.price }}</td>
+        <td>{{ x.stock }}</td>
+        <td>{{ x.sold }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>Não existem produtos cadastrados.</p>
+    {% endif %}
+
+    <p>
+        <a href="{% url 'products:productregistry' %}">Adicionar Produto</a>
+    </p>
+
+</body>
+</html>
