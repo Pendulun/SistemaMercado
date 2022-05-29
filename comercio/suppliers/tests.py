@@ -54,11 +54,11 @@ class SaveSupplierViewTests(TestCase):
 
         novoSup = Supplier(name = supName, telephone = supTel, cnpj = supCnpj, address = supAddress)
 
-        response = self.client.post(reverse("suppliers:savenewsupplier"), data = postData, follow=True)
+        response = self.client.post(reverse("suppliers:supplierregistry"), data = postData, follow=True)
         self.assertEqual(response.status_code, 200)
-
+        
+        response = self.client.get(reverse('suppliers:index'))
         postData['id'] = 1
-
         self.assertEqual(response.context['suppliers_list'][0], novoSup)
     
     def test_register_supplier_with_no_info(self):
@@ -72,9 +72,10 @@ class SaveSupplierViewTests(TestCase):
 
         postData = Utils.getDictOfSupplier(supName, supTel, supCnpj, supAddress)
 
-        response = self.client.post(reverse("suppliers:savenewsupplier"), data = postData, follow=True)
+        response = self.client.post(reverse("suppliers:supplierregistry"), data = postData, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Supplier.objects.count(), 0)
+        self.assertContains(response, 'Este campo é obrigatório.')
 
 class DeleteSupplierViewTest(TestCase):
     def test_delete_supplier(self):
@@ -116,3 +117,22 @@ class AtualizarFornecedorViewTest(TestCase):
         response = self.client.post(reverse("suppliers:update", kwargs={'pk':1}), follow=True)
         self.assertNotEqual(response.status_code, 200)
         self.assertEqual(Supplier.objects.count(), 0)
+    
+    def test_update_supplier_with_no_info(self):
+        """
+        Testa se o supplier não é atualizado se o formulário não for preenchido corretamente
+        """
+        supName = "Teste"
+        supTel = "(31) 12345-6789"
+        supCnpj = '123'
+        supAddress = "Rua Teste"
+
+        novoProduto = Supplier.objects.create(name = supName, telephone = supTel, cnpj=supCnpj, address=supAddress)
+        postData = Utils.getDictOfSupplier(supName, supTel, supCnpj, supAddress)
+
+        postData['name'] = ""
+        response = self.client.post(reverse("suppliers:update", kwargs={'pk':novoProduto.id}), data = postData, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Supplier.objects.count(), 1)
+        self.assertEqual(Supplier.objects.get(pk=novoProduto.id).name, supName)
+        self.assertContains(response, 'Este campo é obrigatório.')
