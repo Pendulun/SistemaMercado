@@ -2,20 +2,9 @@
 <html>
 <body>
 
-    <h1>Produtos</h1>
+    <h1>Pesquisa de Produto</h1>
 
-    <form action="{% url 'products:searchproduct' %}" method="post">
-        {% csrf_token %}
-        Pesquisar produto pelo nome:<br>
-        <input type="text" name="name" placeholder="Nome do Produto">
-        <input type="submit" value="Pesquisar">
-    </form>
-
-    <p>
-        <a href="{% url 'products:productregistry' %}">Adicionar Produto</a>
-    </p>
-
-    {% if myproducts %}
+    {% if myproductsearch %}
         <table border="1">
             <thead>
                 <th>Id</th>
@@ -25,7 +14,7 @@
                 <th>Estoque</th>
                 <th>Vendidos</th>
             </thead>
-        {% for x in myproducts %}
+        {% for x in myproductsearch %}
         <tr>
         <td><a href="update/{{ x.id }}">{{ x.id }}</a></td>
         <td>{{ x.name }}</td>
@@ -38,8 +27,12 @@
         {% endfor %}
         </table>
     {% else %}
-        <p>Não existem produtos cadastrados.</p>
+        <p>Não existem produtos cadastrados com este nome.</p>
     {% endif %}
+
+    <p>
+        <a href="{% url 'products:index' %}">Voltar para o index</a>
+    </p>
 
 </body>
 </html>
