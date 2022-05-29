@@ -34,3 +34,42 @@ def saveproduct(request):
         return HttpResponseRedirect(reverse("products:productregistry"))
     else:
         return HttpResponseRedirect(reverse("products:index"))
+
+def delete(request, id):
+  produto = Product.objects.get(id=id)
+  produto.delete()
+  return HttpResponseRedirect(reverse('products:index'))
+
+def update(request, id):
+  myproduct = Product.objects.get(id=id)
+  template = loader.get_template('products/update.html')
+  context = {
+    'myproduct': myproduct,
+  }
+  return HttpResponse(template.render(context, request))
+
+def updaterecord(request, id):
+  nome = request.POST['name']
+  marca = request.POST['brand']
+  preco = request.POST['price']
+
+  produto = Product.objects.get(id=id)
+  produto.name = nome
+  produto.brand = marca
+  produto.price = preco
+
+  produto.save()
+  
+  return HttpResponseRedirect(reverse('products:index'))
+
+def search(request):
+    nome = request.POST['name']
+    template = loader.get_template('products/searchProduct.html')
+
+    myproductsearch = Product.objects.filter(name=nome).values()
+
+    context = {
+        'myproductsearch': myproductsearch,
+    }
+    
+    return HttpResponse(template.render(context, request))    
