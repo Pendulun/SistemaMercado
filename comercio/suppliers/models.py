@@ -9,7 +9,7 @@ class Supplier(models.Model):
     #product list
 
     def __str__(self):
-        return self.name+""+self.cnpj
+        return self.name+":"+self.cnpj
     
     def __eq__(self, obj):
         if isinstance(obj, Supplier):
@@ -21,3 +21,6 @@ class Supplier(models.Model):
             return all(conditions)
         else:
             return False
+    
+    def __hash__(self):
+        return super().__hash__()
