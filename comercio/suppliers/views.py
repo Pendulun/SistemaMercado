@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import generic
 from .models import Supplier
 from django.contrib import messages
@@ -40,3 +40,7 @@ def savesupplier(request):
     else:
         messages.error(request, "Complete corretamente todos os campos de cadastro!")
         return HttpResponseRedirect(reverse("suppliers:supplierregistry"))
+
+class DeletarFornecedorView(generic.DeleteView):
+    model = Supplier
+    success_url = reverse_lazy('suppliers:index')

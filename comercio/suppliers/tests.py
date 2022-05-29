@@ -73,3 +73,21 @@ class SaveSupplierViewTests(TestCase):
         response = self.client.post(reverse("suppliers:savenewsupplier"), data = postData, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Supplier.objects.count(), 0)
+
+class DeleteSupplierViewTest(TestCase):
+    def test_delete_supplier(self):
+        supName = "Fornecedor"
+        supTel = "(31) 12345-6789"
+        supCnpj = '1234567890'
+        supAddress = "Rua Teste"
+
+        novoSupplier = Supplier.objects.create(name=supName, telephone=supTel, cnpj=supCnpj, address=supAddress)
+
+        response = self.client.post(reverse("suppliers:delete", kwargs={'pk':novoSupplier.id}), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Supplier.objects.count(), 0)
+    
+    def test_delete_supplier_that_doesnt_exists(self):
+        response = self.client.post(reverse("suppliers:delete", kwargs={'pk':1}), follow=True)
+        self.assertNotEqual(response.status_code, 200)
+        self.assertEqual(Supplier.objects.count(), 0)

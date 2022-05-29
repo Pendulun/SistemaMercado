@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Confirmar Deleção</title>
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        <p>Tem certeza que quer deletar o Fornecedor com os seguintes dados:</p>
+        <table border="1">
+            <thead>
+                <th>Nome</th>
+                <th>CNPJ</th>
+                <th>Telefone</th>
+                <th>Endereço</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ object.name }}</td>
+                    <td>{{ object.cnpj }}</td>
+                    <td>{{ object.telephone }}</td>
+                    <td>{{ object.address }}</td>
+                </tr>
+            </tbody>
+        </table>
+        {{ form }}
+        <br>
+        <input type="submit" value="Confirmar">
+    </form>
+    <br>
+    <form action="{% url 'suppliers:index'%}" style="display: inline;">
+        <input type="submit" value="Voltar ao index" />
+    </form>
+</body>
+</html>
