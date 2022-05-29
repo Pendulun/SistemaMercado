@@ -8,5 +8,5 @@ urlpatterns = [
     path('add/', views.CadastroFornecedorView.as_view(), name="supplierregistry"),
     path('add/addsupplier/', views.savesupplier, name="savenewsupplier"),
     path('delete/<int:pk>', views.DeletarFornecedorView.as_view(), name='delete'),
-    path('/update/<int:pk>', views.AtualizarFornecedorView.as_view(), name='update'),
+    path('update/<int:pk>', views.AtualizarFornecedorView.as_view(), name='update'),
 ]
