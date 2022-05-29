@@ -49,18 +49,23 @@ def update(request, id):
   return HttpResponse(template.render(context, request))
 
 def updaterecord(request, id):
-  nome = request.POST['name']
-  marca = request.POST['brand']
-  preco = request.POST['price']
+    nome = request.POST['name']
+    marca = request.POST['brand']
+    preco = request.POST['price']
 
-  produto = Product.objects.get(id=id)
-  produto.name = nome
-  produto.brand = marca
-  produto.price = preco
+    try:
+        produto = Product.objects.get(id=id)
+        produto.name = nome
+        produto.brand = marca
+        produto.price = preco
 
-  produto.save()
-  
-  return HttpResponseRedirect(reverse('products:index'))
+        produto.save()
+    except:
+        messages.error(request, "Complete corretamente todos os campos de cadastro!")
+        return HttpResponseRedirect(reverse("products:update", kwargs={'id':id}))
+    else:
+    
+        return HttpResponseRedirect(reverse('products:index'))
 
 def search(request):
     nome = request.POST['name']
@@ -71,5 +76,5 @@ def search(request):
     context = {
         'myproductsearch': myproductsearch,
     }
-    
+
     return HttpResponse(template.render(context, request))    

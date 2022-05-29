@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <meta charset='utf-8'>
+        <title>Pesquisa de Produto</title>
+    </head>
 <body>
 
     <h1>Pesquisa de Produto</h1>
@@ -16,13 +20,13 @@
             </thead>
         {% for x in myproductsearch %}
         <tr>
-        <td><a href="update/{{ x.id }}">{{ x.id }}</a></td>
+        <td><a href="{% url 'products:update' x.id %}">{{ x.id }}</a></td>
         <td>{{ x.name }}</td>
         <td>{{ x.brand }}</td>
         <td>{{ x.price }}</td>
         <td>{{ x.stock }}</td>
         <td>{{ x.sold }}</td>
-        <td><a href="delete/{{ x.id }}">delete</a></td>
+        <td><a href="{% url 'products:delete' x.id %}">delete</a></td>
         </tr>
         {% endfor %}
         </table>
