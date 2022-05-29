@@ -1,27 +1,46 @@
-<h1>Atualizar Produto</h1>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>Atualizar Produto</title>
+    </head>
+<body>
 
-<form action="updaterecord/{{ myproduct.id }}" method="post">
-{% csrf_token %}
-Nome:<br>
-<input name="name" value="{{ myproduct.name }}">
-<br><br>
-Marca:<br>
-<input name="brand" value="{{ myproduct.brand }}">
-<br><br>
-Preço:<br>
-<input name="price" value="{{ myproduct.price }}">
-<br><br>
-Estoque:<br>
-<p>
-    {{ myproduct.stock }}
-</p>
-Vendidos:<br>
-<p>
-    {{ myproduct.sold }}
-</p>
-<br>
-<input type="submit" value="Atualizar">
-<p>
-    <a href="{% url 'products:index' %}">Voltar para o index</a>
-</p>
-</form>
+    <h1>Atualizar Produto</h1>
+
+    {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    
+    <form action="{% url 'products:updaterecord' myproduct.id %}" method="post">
+    {% csrf_token %}
+    Nome:<br>
+    <input name="name" value="{{ myproduct.name }}">
+    <br><br>
+    Marca:<br>
+    <input name="brand" value="{{ myproduct.brand }}">
+    <br><br>
+    Preço:<br>
+    <input name="price" value="{{ myproduct.price }}">
+    <br><br>
+    Estoque:<br>
+    <p>
+        {{ myproduct.stock }}
+    </p>
+    Vendidos:<br>
+    <p>
+        {{ myproduct.sold }}
+    </p>
+    <br>
+    <input type="submit" value="Atualizar">
+    <p>
+        <a href="{% url 'products:index' %}">Voltar para o index</a>
+    </p>
+    </form>
+
+</body>
+</html>
