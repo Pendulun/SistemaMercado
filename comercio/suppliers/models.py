@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 # Create your models here.
 class Supplier(models.Model):
@@ -7,6 +8,9 @@ class Supplier(models.Model):
     cnpj = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
     #product list
+
+    def get_absolute_url(self):
+        return reverse('suppliers:update', kwargs={'pk':self.pk})
 
     def __str__(self):
         return self.name+":"+self.cnpj
