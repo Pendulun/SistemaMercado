@@ -25,11 +25,18 @@ def savesupplier(request):
     phone = request.POST['telephone']
     cnpj = request.POST['cnpj']
     endereco = request.POST['address']
-    try:
-        novoSupplier = Supplier(name=nome, telephone=phone, cnpj=cnpj, address=endereco)
-        novoSupplier.save()
-    except:
+
+    anyEmpty = list(filter(lambda x: x == "".strip(), [nome, phone, cnpj, endereco]))
+
+    if len(anyEmpty) == 0:
+        try:
+            novoSupplier = Supplier(name=nome, telephone=phone, cnpj=cnpj, address=endereco)
+            novoSupplier.save()
+        except:
+            messages.error(request, "Complete corretamente todos os campos de cadastro!")
+            return HttpResponseRedirect(reverse("suppliers:supplierregistry"))
+        else:
+            return HttpResponseRedirect(reverse("suppliers:index"))
+    else:
         messages.error(request, "Complete corretamente todos os campos de cadastro!")
         return HttpResponseRedirect(reverse("suppliers:supplierregistry"))
-    else:
-        return HttpResponseRedirect(reverse("suppliers:index"))

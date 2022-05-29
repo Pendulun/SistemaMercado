@@ -10,3 +10,14 @@ class Supplier(models.Model):
 
     def __str__(self):
         return self.name+""+self.cnpj
+    
+    def __eq__(self, obj):
+        if isinstance(obj, Supplier):
+            conditions = [obj.name == self.name,
+                            obj.telephone == self.telephone,
+                            obj.cnpj == self.cnpj,
+                            obj.address == self.address
+                        ]
+            return all(conditions)
+        else:
+            return False
