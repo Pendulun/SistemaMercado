@@ -44,3 +44,10 @@ def savesupplier(request):
 class DeletarFornecedorView(generic.DeleteView):
     model = Supplier
     success_url = reverse_lazy('suppliers:index')
+
+class AtualizarFornecedorView(generic.UpdateView):
+    model = Supplier
+    fields = ['name','cnpj','telephone','address']
+    template_name_suffix = '_update_form'
+
+    success_url = reverse_lazy('suppliers:index')

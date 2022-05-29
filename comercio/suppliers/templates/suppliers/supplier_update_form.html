@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Atualizar Fornecedor</title>
+</head>
+<body>
+    <h1>Atualizar Fornecedor</h1>
+    <form method="post"> 
+        {% csrf_token %} 
+        {{ form.as_p }} 
+        <input type="submit" value="Atualizar"> 
+    </form> 
+    <form action="{% url 'suppliers:index'%}" style="display: inline;">
+        <input type="submit" value="Voltar ao index" />
+    </form>
+</body>
+</html>
