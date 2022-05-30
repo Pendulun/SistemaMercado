@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import generic
 from .models import Supplier
 from django.contrib import messages
@@ -14,29 +14,25 @@ class IndexView(generic.ListView):
     def get_queryset(request):
         return Supplier.objects.all()
 
+class SearchView(generic.ListView):
+    template_name = 'suppliers/search.html'
+    context_object_name = "suppliers_list"
+
+    def get_queryset(self):
+        return Supplier.objects.filter(name__icontains = self.request.GET['name']).values()
 
 class CadastroFornecedorView(generic.CreateView):
     template_name_suffix = '_create_form'
     model = Supplier
     fields = ['name','telephone','cnpj','address']
 
-def savesupplier(request):
-    nome = request.POST['name']
-    phone = request.POST['telephone']
-    cnpj = request.POST['cnpj']
-    endereco = request.POST['address']
+class DeletarFornecedorView(generic.DeleteView):
+    model = Supplier
+    success_url = reverse_lazy('suppliers:index')
 
-    anyEmpty = list(filter(lambda x: x == "".strip(), [nome, phone, cnpj, endereco]))
+class AtualizarFornecedorView(generic.UpdateView):
+    model = Supplier
+    fields = ['name','cnpj','telephone','address']
+    template_name_suffix = '_update_form'
 
-    if len(anyEmpty) == 0:
-        try:
-            novoSupplier = Supplier(name=nome, telephone=phone, cnpj=cnpj, address=endereco)
-            novoSupplier.save()
-        except:
-            messages.error(request, "Complete corretamente todos os campos de cadastro!")
-            return HttpResponseRedirect(reverse("suppliers:supplierregistry"))
-        else:
-            return HttpResponseRedirect(reverse("suppliers:index"))
-    else:
-        messages.error(request, "Complete corretamente todos os campos de cadastro!")
-        return HttpResponseRedirect(reverse("suppliers:supplierregistry"))
+    success_url = reverse_lazy('suppliers:index')

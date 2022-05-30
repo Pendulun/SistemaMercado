@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 # Create your models here.
 class Supplier(models.Model):
@@ -8,8 +9,11 @@ class Supplier(models.Model):
     address = models.CharField(max_length=255)
     #product list
 
+    def get_absolute_url(self):
+        return reverse('suppliers:update', kwargs={'pk':self.pk})
+
     def __str__(self):
-        return self.name+""+self.cnpj
+        return self.name+":"+self.cnpj
     
     def __eq__(self, obj):
         if isinstance(obj, Supplier):
@@ -21,3 +25,6 @@ class Supplier(models.Model):
             return all(conditions)
         else:
             return False
+    
+    def __hash__(self):
+        return super().__hash__()
