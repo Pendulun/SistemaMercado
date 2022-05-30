@@ -9,4 +9,6 @@ urlpatterns = [
     path('search/', views.SearchView.as_view(), name='search'),
     path('delete/<int:pk>', views.DeletarFornecedorView.as_view(), name='delete'),
     path('update/<int:pk>', views.AtualizarFornecedorView.as_view(), name='update'),
+    path('registerProduct/', views.product_to_supplier, name='product_to_supplier'),
+    path('registerProducts/', views.register_products_to_supplier, name='register_products_to_supplier'),
 ]

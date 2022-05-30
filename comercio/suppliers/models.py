@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from products.models import Product
 
 # Create your models here.
 class Supplier(models.Model):
@@ -7,7 +8,7 @@ class Supplier(models.Model):
     telephone = models.CharField(max_length=255)
     cnpj = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
-    #product list
+    products = models.ManyToManyField(Product)
 
     def get_absolute_url(self):
         return reverse('suppliers:update', kwargs={'pk':self.pk})
