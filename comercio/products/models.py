@@ -5,7 +5,6 @@ class Product(models.Model):
     name = models.CharField(max_length=255)
     price = models.FloatField()
     brand = models.CharField(max_length=255)
-    #suppliers = []
     stock = models.PositiveIntegerField()
     sold = models.PositiveIntegerField()
 

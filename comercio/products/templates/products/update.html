@@ -35,12 +35,39 @@
     <p>
         {{ myproduct.sold }}
     </p>
-    <br>
+    <h3>Fornecedores do Produto</h3>
+    {%if myproduct.supplier_set.all %}
+        <table border="1">
+            <thead>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th>CNPJ</th>
+                <th>Endereço</th>
+            </thead>
+            {% for supplier in myproduct.supplier_set.all%}
+                <tr>
+                    <td>{{supplier.name}}</td>
+                    <td>{{supplier.telephone}}</td>
+                    <td>{{supplier.cnpj}}</td>
+                    <td>{{supplier.address}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else%}
+        <p>Não existem Fornecedores para esse Produto</p>
+    {% endif %}
     <input type="submit" value="Atualizar">
+    </form>
+
+    {% if myproduct.supplier_set.all %}
+    <form action="{% url 'products:suppliers_of_product' myproduct.id%}">
+        <input type="submit" name="comprarEstoque" value="Comprar Estoque">
+    </form>
+    {% else%}
+        <p>Para comprar estoque, <a href="{% url 'suppliers:index' %}">associe um Fornecedor à esse Produto</a></p>
+    {% endif %}
     <p>
         <a href="{% url 'products:index' %}">Voltar para o index</a>
     </p>
-    </form>
-
 </body>
 </html>

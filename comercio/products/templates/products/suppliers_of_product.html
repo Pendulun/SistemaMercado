@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comprar Estoque</title>
+</head>
+<body>
+    <h3>Fornecedores do Produto</h3>
+    {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% if product.supplier_set.all%}
+    <form action="{% url 'products:buyStock'%}" method="POST">
+        {%csrf_token%}
+        <table border="1">
+            <thead>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th>CNPJ</th>
+                <th>Endereço</th>
+                <th>Comprar</th>
+            </thead>
+            {% for supplier in product.supplier_set.all%}
+                <tr>
+                    <td>{{supplier.name}}</td>
+                    <td>{{supplier.telephone}}</td>
+                    <td>{{supplier.cnpj}}</td>
+                    <td>{{supplier.address}}</td>
+                    <td>
+                        <input type="radio" name="supplier" id="supplier-{{supplier.id}}" value="{{supplier.id}}" required>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <br>
+        
+        <label for="estoqueComprado">Quantidade a comprar</label>
+        <input type="text" id='estoqueComprado' name="stockToBuy" placeholder="Quantidade a ser comprada" required>
+        <input type="hidden" name="prodId" value="{{product.id}}">
+        <input type="submit" value="Comprar">
+    </form>
+    
+    {%else%}
+        <p>Não existem Fornecedores para esse Produto</p>
+    {% endif %}
+    <p>
+        <a href="{% url 'products:index' %}">Voltar para o index</a>
+    </p>
+</body>
+</html>
