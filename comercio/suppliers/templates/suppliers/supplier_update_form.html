@@ -9,10 +9,50 @@
     <form method="post"> 
         {% csrf_token %} 
         {{ form.as_p }} 
-        <input type="submit" value="Atualizar"> 
+
+        <h4>Produtos cadastrados a esse Fornecedor</h4>
+        {% if object.products.all %}
+            
+            <table border="1">
+                <thead>
+                    <th>Id</th>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                    <th>Marca</th>
+                    <th>Estoque</th>
+                    <th>Vendidos</th>
+                </thead>
+                {% for product in object.products.all%}
+                    <tr>
+                        <td>{{product.id}}</td>
+                        <td>{{product.name}}</td>
+                        <td>{{product.price}}</td>
+                        <td>{{product.brand}}</td>
+                        <td>{{product.stock}}</td>
+                        <td>{{product.sold}}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {%else %}
+            <p>Não existem Produtos associados a esse Fornecedor</p>
+        {% endif %}
+        <br>
+        <input type="submit" value="Atualizar Fornecedor"> 
     </form> 
+    <br>
+    <form action="{% url 'suppliers:product_to_supplier'%}" style="display: inline;">
+        <input type="submit" value="Cadastrar Novo Produto" />
+        <input type="hidden" name="supplierId" id="supplierId" value="{{object.id}}">
+    </form>
+    <br><br>
+    <form action="{% url 'suppliers:remove_product_of_supplier'%}" style="display: inline;">
+        <input type="submit" value="Desassociar um Produto" />
+        <input type="hidden" name="supplierId" id="supplierId" value="{{object.id}}">
+    </form>
+    <br><br>
     <form action="{% url 'suppliers:index'%}" style="display: inline;">
         <input type="submit" value="Voltar ao index" />
     </form>
+    
 </body>
 </html>
