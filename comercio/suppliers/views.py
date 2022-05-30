@@ -14,6 +14,12 @@ class IndexView(generic.ListView):
     def get_queryset(request):
         return Supplier.objects.all()
 
+class SearchView(generic.ListView):
+    template_name = 'suppliers/search.html'
+    context_object_name = "suppliers_list"
+
+    def get_queryset(self):
+        return Supplier.objects.filter(name__icontains = self.request.GET['name']).values()
 
 class CadastroFornecedorView(generic.CreateView):
     template_name_suffix = '_create_form'

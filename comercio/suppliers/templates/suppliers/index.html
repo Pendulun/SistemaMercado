@@ -6,6 +6,12 @@
 </head>
 <body>
     <h1>Fornecedores</h1>
+    <h2>Pesquisar</h2>
+    <form action="{% url 'suppliers:search' %}" method="get">
+        <input type="text" placeholder="Nome do Fornecedor" name="name">
+        <input type="submit" value="Pesquisar">
+    </form>
+    <h2>Cadastrados</h2>
     {% if suppliers_list %}
         <table border="1">
             <thead>

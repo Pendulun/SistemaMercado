@@ -75,7 +75,7 @@ class SaveSupplierViewTests(TestCase):
         response = self.client.post(reverse("suppliers:supplierregistry"), data = postData, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Supplier.objects.count(), 0)
-        self.assertContains(response, 'Este campo é obrigatório.')
+        self.assertContains(response, 'This field is required')
 
 class DeleteSupplierViewTest(TestCase):
     def test_delete_supplier(self):
@@ -133,6 +133,37 @@ class AtualizarFornecedorViewTest(TestCase):
         postData['name'] = ""
         response = self.client.post(reverse("suppliers:update", kwargs={'pk':novoProduto.id}), data = postData, follow=True)
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'This field is required')
         self.assertEqual(Supplier.objects.count(), 1)
         self.assertEqual(Supplier.objects.get(pk=novoProduto.id).name, supName)
-        self.assertContains(response, 'Este campo é obrigatório.')
+        
+
+class SupplierSearchViewTests(TestCase):
+    def test_no_suppliers(self):
+        """
+        Testa se aparece uma mensagem de erro apropriada quando não houver resultado para a pesquisa
+        """
+
+        response = self.client.get(reverse("suppliers:search"), data={'name':'a'})
+        self.assertEqual(response.status_code, 200)
+        noResultsMsg = 'Não existem fornecedores cadastrados com o nome pesquisado.'
+        self.assertContains(response, noResultsMsg)
+        self.assertQuerysetEqual(response.context['suppliers_list'], [])
+
+    def test_search_one_supplier(self):
+        """
+        Testa se o supplier recém cadastrado é enviado para a página de index
+        """
+        supName = "Fornecedor Teste"
+        supTel = "(31) 12345-6789"
+        supCnpj = '1234567890'
+        supAddress = "Rua Teste"
+
+        novoSupplier = Supplier.objects.create(name=supName, telephone=supTel, cnpj=supCnpj, address=supAddress)
+
+        response = self.client.get(reverse("suppliers:search"), data={'name':novoSupplier.name})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, novoSupplier.name)
+        self.assertContains(response, novoSupplier.telephone)
+        self.assertContains(response, novoSupplier.cnpj)
+        self.assertContains(response, novoSupplier.address)

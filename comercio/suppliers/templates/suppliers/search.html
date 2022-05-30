@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Pesquisa de Fornecedor</title>
+</head>
+<body>
+    <h1>Fornecedores Encontrados</h1>
+    {% if suppliers_list %}
+    <table border="1">
+        <thead>
+            <th>Id</th>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>CNPJ</th>
+            <th>Endereço</th>
+            <th>Ação</th>
+        </thead>
+        {% for x in suppliers_list %}
+        <tr>
+            <td><a href="{% url 'suppliers:update' x.id %}">{{ x.id }}</a></td>
+            <td>{{ x.name }}</td>
+            <td>{{ x.telephone }}</td>
+            <td>{{ x.cnpj }}</td>
+            <td>{{ x.address }}</td>
+            <td><a href="{% url 'suppliers:delete' x.id %}">Deletar</a></td>
+        </tr>
+    {% endfor %}
+    </table>
+    {% else %}
+        <p>Não existem fornecedores cadastrados com o nome pesquisado.</p>
+    {% endif %}
+
+    <p>
+        <a href="{% url 'suppliers:index' %}">Voltar para o index</a>
+    </p>
+</body>
+</html>
