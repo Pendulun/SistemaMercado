@@ -78,3 +78,32 @@ def search(request):
     }
 
     return HttpResponse(template.render(context, request))    
+
+def suppliers_of_product(request, pk):
+    template = loader.get_template('products/suppliers_of_product.html')
+    prodId = pk
+    product = Product.objects.get(pk=prodId)
+
+    context = {'product':product}
+    return HttpResponse(template.render(context, request))
+
+def buyStock(request):
+    prodId = request.POST['prodId']
+    supToBuy = 0
+    stockToBuy = 0
+    try:
+        supToBuy = request.POST['supplier']
+    except:
+        messages.error(request, "Selecione um Fornecedor para comprar")
+        return HttpResponseRedirect(reverse("products:suppliers_of_product", kwargs={'pk':prodId}))
+    else:
+        try:
+            stockToBuy = int(request.POST['stockToBuy'])
+        except:
+            messages.error(request, "Digite apenas números inteiros no estoque!")
+            return HttpResponseRedirect(reverse("products:suppliers_of_product", kwargs={'pk':prodId}))
+        else:
+            product = Product.objects.get(pk=prodId)
+            product.stock += stockToBuy
+            product.save()
+            return HttpResponseRedirect(reverse('products:index')) 
