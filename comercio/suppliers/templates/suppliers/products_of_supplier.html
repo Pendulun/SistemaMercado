@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Remover Produto de Fornecedor</title>
+</head>
+<body>
+    <h1>Remover Produto de Fornecedor</h1>
+    {% if supplier.products.all %}
+    <form action="{% url 'suppliers:unregister_products_to_supplier' %}" method="POST">
+        {% csrf_token%}
+        <table border="1">
+            <thead>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Preço</th>
+                <th>Marca</th>
+                <th>Estoque</th>
+                <th>Vendidos</th>
+                <th>Selecionar</th>
+            </thead>
+                {% for x in supplier.products.all%}
+                    <tr>
+                        <td>{{x.id}}</td>
+                        <td>{{x.name}}</td>
+                        <td>{{x.price}}</td>
+                        <td>{{x.brand}}</td>
+                        <td>{{x.stock}}</td>
+                        <td>{{x.sold}}</td>
+                        <td>
+                            <input type="checkbox" name="checked-{{forloop.counter0}}" id="checked-{{forloop.counter0}}" value="{{x.id}}">
+                        </td>
+                    </tr>
+                {% endfor %}
+        </table>
+        <br>
+        <input type="hidden" name="supId" value="{{supplier.id}}">
+        <input type="submit" name="remover" id="remover" value="Remover Selecionados">
+    </form>
+    {% else %}
+        <p>Não existem produtos cadastrados para esse Fornecedor.</p>
+    {% endif %}
+    <br>
+    <form action="{% url 'suppliers:index'%}" style="display: inline;">
+        <input type="submit" value="Voltar ao index" />
+    </form>
+</body>
+</html>

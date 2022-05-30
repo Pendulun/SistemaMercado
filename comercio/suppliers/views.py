@@ -37,9 +37,9 @@ class AtualizarFornecedorView(generic.UpdateView):
 
     success_url = reverse_lazy('suppliers:index')
 
-def product_to_supplier(request):
+def product_to_supplier_view(request):
     template = loader.get_template("suppliers/productToSupplier.html")
-    myproducts = Product.objects.all()#[:3]
+    myproducts = Product.objects.all()
 
     supId = request.GET['supplierId']
 
@@ -52,8 +52,6 @@ def product_to_supplier(request):
     for product in myproducts:
         if product not in supProducts:
             productsToShow.append(product)
-
-    print(f"Products to Show: {productsToShow}")
 
     context = {
         "myproducts": productsToShow,
@@ -68,5 +66,27 @@ def register_products_to_supplier(request):
     for checkboxName in checkboxArgs:
         checkBoxValue = request.POST[checkboxName]
         mySup.products.add(Product.objects.get(pk=checkBoxValue))
+
+    return HttpResponseRedirect(reverse('suppliers:index'))
+
+def remove_product_to_supplier_view(request):
+    template = loader.get_template("suppliers/products_of_supplier.html")
+
+    supId = request.GET['supplierId']
+
+    supplier = Supplier.objects.get(pk=supId)
+
+    context = {
+        "supplier": supplier
+    }
+
+    return HttpResponse(template.render(context, request))
+
+def remove_products_of_supplier(request):
+    checkboxArgs = [arg for arg in list(request.POST.keys()) if arg[:8] == 'checked-'] 
+    mySup = Supplier.objects.get(pk=request.POST['supId'])
+    for checkboxName in checkboxArgs:
+        checkBoxValue = request.POST[checkboxName]
+        mySup.products.remove(Product.objects.get(pk=checkBoxValue))
 
     return HttpResponseRedirect(reverse('suppliers:index'))

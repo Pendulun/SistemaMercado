@@ -45,6 +45,11 @@
         <input type="hidden" name="supplierId" id="supplierId" value="{{object.id}}">
     </form>
     <br><br>
+    <form action="{% url 'suppliers:remove_product_of_supplier'%}" style="display: inline;">
+        <input type="submit" value="Desassociar um Produto" />
+        <input type="hidden" name="supplierId" id="supplierId" value="{{object.id}}">
+    </form>
+    <br><br>
     <form action="{% url 'suppliers:index'%}" style="display: inline;">
         <input type="submit" value="Voltar ao index" />
     </form>
