@@ -8,7 +8,7 @@ from django.contrib import messages
 # Create your views here.
 def index(request):
     template = loader.get_template("products/index.html")
-    myproducts = Product.objects.all().values()#[:3]
+    myproducts = Product.objects.all().values()
 
     context = {
         "myproducts": myproducts,
@@ -71,7 +71,7 @@ def search(request):
     nome = request.POST['name']
     template = loader.get_template('products/searchProduct.html')
 
-    myproductsearch = Product.objects.filter(name=nome).values()
+    myproductsearch = Product.objects.filter(name__icontains=nome)
 
     context = {
         'myproductsearch': myproductsearch,

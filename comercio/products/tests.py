@@ -40,6 +40,8 @@ class ProductIndexViewTests(TestCase):
 
         self.assertEqual(response.context['myproducts'][0], prodDict)
 
+        novoproduto.delete()
+
 class ProductRegisterViewTests(TestCase):
     def test_register_product(self):
         """
@@ -86,3 +88,128 @@ class ProductRegisterViewTests(TestCase):
         response = self.client.post(reverse("products:savenewproduct"), data = postData, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Complete corretamente todos os campos de cadastro!")
+    
+class ProductSearchViewTests(TestCase):
+    
+    def test_cant_find_unregistered_product(self):
+        searchedProdName = "Chocolate"
+
+        postData = {'name':searchedProdName}
+        response = self.client.post(reverse("products:searchproduct"), data = postData, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(response.context['myproductsearch'], [])
+    
+    def test_can_find_registered_product_by_complete_name(self):
+        prodName = "Chocolate"
+        prodPrice = 4.5
+        prodBrand = 'Lacta'
+        prodStock = 0
+        prodSold = 0
+        
+        productList = [{   'name': prodName,
+                            'price': prodPrice,
+                            'brand': prodBrand,
+                            'stock': prodStock,
+                            'sold': prodSold
+                        }]
+        
+        novoProduto = self.create_products_and_return(productList)[0]
+
+        postData = {'name' : prodName}
+        response = self.client.post(reverse("products:searchproduct"), data = postData, follow=True)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(response.context['myproductsearch'], [novoProduto])
+        
+        novoProduto.delete()
+
+    def test_can_find_registered_product_by_incomplete_name(self):
+        prodName = "Chocolate"
+        prodPrice = 4.5
+        prodBrand = 'Lacta'
+        prodStock = 0
+        prodSold = 0
+
+        productList = [{   'name': prodName,
+                            'price': prodPrice,
+                            'brand': prodBrand,
+                            'stock': prodStock,
+                            'sold': prodSold
+                        }]
+
+        novoProduto = self.create_products_and_return(productList)[0]
+
+        NUM_CHARS_FOR_QUERY = 5
+        postData = {'name' : prodName[:NUM_CHARS_FOR_QUERY]}
+        response = self.client.post(reverse("products:searchproduct"), data = postData, follow=True)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(response.context['myproductsearch'], [novoProduto])
+        
+        novoProduto.delete()
+    
+    def test_can_find_multiple_products_by_incomplete_name(self):
+        prodPrice = 4.5
+        prodBrand = 'Lacta'
+        prodStock = 0
+        prodSold = 0
+
+        prodNames = ["Chocolate", "Barra de Chocolate"]
+
+        productList = [{   'name': prodName,
+                            'price': prodPrice,
+                            'brand': prodBrand,
+                            'stock': prodStock,
+                            'sold': prodSold
+                        } for prodName in prodNames]
+        
+        produtosCriados = self.create_products_and_return(productList)
+
+
+        NUM_CHARS_FOR_QUERY = 5
+        postData = {'name' : 'Chocolate'[:NUM_CHARS_FOR_QUERY]}
+        response = self.client.post(reverse("products:searchproduct"), data = postData, follow=True)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(response.context['myproductsearch'], produtosCriados, ordered=False)
+        
+        [produto.delete() for produto in produtosCriados]
+    
+    def test_dont_get_uncorrelated_products_by_incomplete_name(self):
+        prodPrice = 4.5
+        prodBrand = 'Lacta'
+        prodStock = 0
+        prodSold = 0
+
+        prodNames = ["Chocolate", "Barra de Chocolate", "Espaguete"]
+
+        productList = [{   'name': prodName,
+                            'price': prodPrice,
+                            'brand': prodBrand,
+                            'stock': prodStock,
+                            'sold': prodSold
+                        } for prodName in prodNames]
+        
+        produtosCriados = self.create_products_and_return(productList)
+        
+        NUM_CHARS_FOR_QUERY = 5
+        post_data = {'name' : 'Chocolate'[:NUM_CHARS_FOR_QUERY]}
+        response = self.client.post(reverse("products:searchproduct"), data = post_data, follow=True)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(response.context['myproductsearch'], produtosCriados[:2], ordered=False)
+        
+        [produto.delete() for produto in produtosCriados]
+    
+    def create_products_and_return(self, productsList):
+
+        createdProductsList = [
+                                    Product.objects.create( name=product['name'],
+                                                            price=product['price'],
+                                                            brand=product['brand'],
+                                                            stock=product['stock'],
+                                                            sold=product['sold'] )
+                                    for product in productsList
+                                ]
+
+        return createdProductsList
