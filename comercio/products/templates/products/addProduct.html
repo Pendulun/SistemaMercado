@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset='utf-8'>
-  <title>Adicionar Produto</title>
-</head>
-<body>
-  
-  <h1>Adicionar Produto</h1>
+{% include 'products/base.html' %}
+
+<div class="w3-margin">
+
+  <h1 class='w3-text-green'>Adicionar Produto</h1>
+
 
   {% if messages %}
   <ul class="messages">
@@ -15,7 +12,7 @@
     {% endfor %}
   </ul>
   {% endif %}
-  
+
   <form action="{% url 'products:savenewproduct' %}" method="post">
   {% csrf_token %}
   Nome:<br>
@@ -27,11 +24,10 @@
   Preço:<br>
   <input name="price">
   <br><br>
-  <input type="submit" value="Cadastrar">
+  <input type="submit" value="Cadastrar" class="w3-button w3-lime w3-border w3-round-xlarge w3-margin-top">
   <p>
-      <a href="{% url 'products:index' %}">Voltar para o index</a>
+      <a href="{% url 'products:index' %}" class="w3-button w3-red w3-border w3-round-xlarge w3-margin-top">Voltar</a>
   </p>
   </form>
 
-</body>
-</html>
+</div>
