@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Supplier
+from ..models import Supplier
 from django.urls import reverse
 
 class Utils():

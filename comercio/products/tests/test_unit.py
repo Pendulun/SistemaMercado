@@ -1,8 +1,7 @@
 from django.test import TestCase
-from .models import Product
+from ..models import Product
 from django.urls import reverse
 
-# Create your tests here.
 class ProductIndexViewTests(TestCase):
     def test_index_no_products_warning_message(self):
         """
