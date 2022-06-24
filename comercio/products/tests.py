@@ -247,3 +247,10 @@ class ProductBuyProductViewTest(TestCase):
         
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['myproduct'], self.novoProduto)
+
+    def test_cant_buy_non_int_quantity(self):
+        post_data = {'quantidade' : 'test'}
+        response = self.client.post(reverse("products:buyProduct", kwargs={'id':self.novoProduto.id}), data = post_data, follow=True)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['myproduct'], self.novoProduto)
