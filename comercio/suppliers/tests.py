@@ -11,10 +11,9 @@ class Utils():
             'cnpj': cnpj,
             'address': address
         }
-    
-# Create your tests here.
+
 class SupplierIndexViewTests(TestCase):
-    def test_no_suppliers(self):
+    def test_index_no_suppliers_warning(self):
         """
         Testa se aparece uma mensagem de erro apropriada quando não houverem Suppliers cadastrados
         """
@@ -23,7 +22,7 @@ class SupplierIndexViewTests(TestCase):
         self.assertContains(response, "Não existem fornecedores cadastrados.")
         self.assertQuerysetEqual(response.context['suppliers_list'], [])
 
-    def test_add_one_supplier(self):
+    def test_new_supplier_sent_to_index(self):
         """
         Testa se o supplier recém cadastrado é enviado para a página de index
         """
@@ -41,7 +40,7 @@ class SupplierIndexViewTests(TestCase):
 
 class SaveSupplierViewTests(TestCase):
 
-    def test_register_supplier(self):
+    def test_registered_supplier_sent_to_index(self):
         """
         Testa se o fornecedor cadastrado na tela de cadastro é enviado para o index
         """
@@ -61,7 +60,7 @@ class SaveSupplierViewTests(TestCase):
         postData['id'] = 1
         self.assertEqual(response.context['suppliers_list'][0], novoSup)
     
-    def test_register_supplier_with_no_info(self):
+    def test_cant_register_supplier_invalid_info(self):
         """
         Testa se o supplier não é criado se o formulário não for preenchido corretamente
         """
@@ -78,7 +77,7 @@ class SaveSupplierViewTests(TestCase):
         self.assertContains(response, 'This field is required')
 
 class DeleteSupplierViewTest(TestCase):
-    def test_delete_supplier(self):
+    def test_can_delete_supplier(self):
         supName = "Fornecedor"
         supTel = "(31) 12345-6789"
         supCnpj = '1234567890'
@@ -90,7 +89,7 @@ class DeleteSupplierViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Supplier.objects.count(), 0)
     
-    def test_delete_supplier_that_doesnt_exists(self):
+    def test_cant_delete_supplier_that_doesnt_exists(self):
         response = self.client.post(reverse("suppliers:delete", kwargs={'pk':1}), follow=True)
         self.assertNotEqual(response.status_code, 200)
         self.assertEqual(Supplier.objects.count(), 0)
@@ -113,12 +112,12 @@ class AtualizarFornecedorViewTest(TestCase):
 
         self.assertEqual(Supplier.objects.get(pk=novoSupplier.id).address, supDict['address'])
     
-    def test_update_supplier_that_doesnt_exists(self):
+    def test_cant_update_supplier_that_doesnt_exists(self):
         response = self.client.post(reverse("suppliers:update", kwargs={'pk':1}), follow=True)
         self.assertNotEqual(response.status_code, 200)
         self.assertEqual(Supplier.objects.count(), 0)
     
-    def test_update_supplier_with_no_info(self):
+    def test_cant_update_supplier_invalid_info(self):
         """
         Testa se o supplier não é atualizado se o formulário não for preenchido corretamente
         """
@@ -139,18 +138,17 @@ class AtualizarFornecedorViewTest(TestCase):
         
 
 class SupplierSearchViewTests(TestCase):
-    def test_no_suppliers(self):
+    def test_cant_find_suppliers_that_doesnt_exists(self):
         """
         Testa se aparece uma mensagem de erro apropriada quando não houver resultado para a pesquisa
         """
-
         response = self.client.get(reverse("suppliers:search"), data={'name':'a'})
         self.assertEqual(response.status_code, 200)
         noResultsMsg = 'Não existem fornecedores cadastrados com o nome pesquisado.'
         self.assertContains(response, noResultsMsg)
         self.assertQuerysetEqual(response.context['suppliers_list'], [])
 
-    def test_search_one_supplier(self):
+    def test_can_find_registered_supplier(self):
         """
         Testa se o supplier recém cadastrado é enviado para a página de index
         """
