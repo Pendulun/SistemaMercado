@@ -106,4 +106,26 @@ def buyStock(request):
             product = Product.objects.get(pk=prodId)
             product.stock += stockToBuy
             product.save()
-            return HttpResponseRedirect(reverse('products:index')) 
+            return HttpResponseRedirect(reverse('products:index'))
+    
+def buyProduct(request, id):
+    quantidadeComprada = request.POST['quantidade']
+
+    try:
+        quantidadeComprada = int(quantidadeComprada)
+    except:
+        messages.error(request, "Digite um número inteiro como quantidade para comprar!")
+    else:
+        product = Product.objects.get(pk=id)
+        if product.stock < quantidadeComprada:
+            messages.error(request, "A quantidade comprada excede o estoque atual!")
+        elif quantidadeComprada <= 0:
+            messages.error(request, "A quantidade comprada deve ser um número positivo!")
+        else:
+            product.stock -= quantidadeComprada
+            product.sold += quantidadeComprada
+            product.save()
+            messages.success(request, "Produto comprado com sucesso!")
+        
+    finally:
+        return HttpResponseRedirect(reverse("products:update", kwargs={'id':id}))

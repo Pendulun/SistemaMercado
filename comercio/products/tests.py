@@ -213,3 +213,37 @@ class ProductSearchViewTests(TestCase):
                                 ]
 
         return createdProductsList
+
+class ProductBuyProductViewTest(TestCase):
+    def setUp(self):
+        self.novoProduto = Product.objects.create( name='Chocolate', price=4.2,
+                                brand='Lacta', stock= 15,
+                                sold=0)
+    
+    def tearDown(self):
+        self.novoProduto.delete()
+
+    def test_can_buy_product(self):
+        post_data = {'quantidade' : 5}
+        response = self.client.post(reverse("products:buyProduct", kwargs={'id':self.novoProduto.id}), data = post_data, follow=True)
+        
+        self.assertEqual(response.status_code, 200)
+
+        self.novoProduto.stock -= post_data['quantidade']
+        self.novoProduto.sold += post_data['quantidade']
+
+        self.assertEqual(response.context['myproduct'], self.novoProduto)
+    
+    def test_cant_buy_if_quantity_bigger_than_stock(self):
+        post_data = {'quantidade' : 30}
+        response = self.client.post(reverse("products:buyProduct", kwargs={'id':self.novoProduto.id}), data = post_data, follow=True)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['myproduct'], self.novoProduto)
+    
+    def test_cant_buy_negative_quantity(self):
+        post_data = {'quantidade' : -1}
+        response = self.client.post(reverse("products:buyProduct", kwargs={'id':self.novoProduto.id}), data = post_data, follow=True)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['myproduct'], self.novoProduto)
