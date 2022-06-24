@@ -17,24 +17,41 @@
     {% endif %}
     
     <form action="{% url 'products:updaterecord' myproduct.id %}" method="post">
-    {% csrf_token %}
-    Nome:<br>
-    <input name="name" value="{{ myproduct.name }}">
-    <br><br>
-    Marca:<br>
-    <input name="brand" value="{{ myproduct.brand }}">
-    <br><br>
-    Preço:<br>
-    <input name="price" value="{{ myproduct.price }}">
-    <br><br>
-    Estoque:<br>
-    <p>
-        {{ myproduct.stock }}
-    </p>
-    Vendidos:<br>
-    <p>
-        {{ myproduct.sold }}
-    </p>
+        {% csrf_token %}
+
+        <label for="name_field"> Nome:</label><br>
+        <input name="name" value="{{ myproduct.name }}" id="name_field" placeholder="Digite um nome" required>
+        <br><br>
+
+        <label for="">Marca:</label><br>
+        <input name="brand" value="{{ myproduct.brand }}" id="brand_field" placeholder="Digite uma marca" required>
+        <br><br>
+
+        <label for="price_field">Preço:</label><br>
+        <input name="price" value="{{ myproduct.price }}" id="price_field" placeholder="Digite um preço" required>
+        <br><br>
+
+        <label for="stock_field">Estoque:</label><br>
+        <span id="stock_field">{{ myproduct.stock }}</span>
+        <br><br>
+        
+        <label for="sold_field">Vendidos:</label><br>
+        <span id="sold_field">{{ myproduct.sold }}</span>
+        <br><br>
+        
+        <input type="submit" value="Atualizar">
+    </form>
+
+    <h3>Compra de Produto</h3>
+    <form action="{% url 'products:buyProduct' myproduct.id %}" method="post">
+        {% csrf_token %}
+        <label for="">Quantidade:</label><br>
+        <input type="text" name="quantidade" id="quantidade_field" placeholder="Digite um número" required>
+        <br><br>
+
+        <input type="submit" value="Comprar">
+    </form>
+
     <h3>Fornecedores do Produto</h3>
     {%if myproduct.supplier_set.all %}
         <table border="1">
@@ -56,9 +73,7 @@
     {% else%}
         <p>Não existem Fornecedores para esse Produto</p>
     {% endif %}
-    <input type="submit" value="Atualizar">
-    </form>
-
+    <br>
     {% if myproduct.supplier_set.all %}
     <form action="{% url 'products:suppliers_of_product' myproduct.id%}">
         <input type="submit" name="comprarEstoque" value="Comprar Estoque">
