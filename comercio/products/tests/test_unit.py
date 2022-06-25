@@ -113,7 +113,7 @@ class ProductBuyStockViewTest(TestCase):
         return Supplier.objects.create(name=supName, telephone=supTel,
                                             cnpj=supCnpj, address=supAddress)
         
-    def test_can_buy_stock(self):
+    def test_cant_buy_stock_from_not_associated_supplier(self):
 
         STOCK_TO_BUY = 5
         postData = {"prodId": self.produto.id,
@@ -122,7 +122,7 @@ class ProductBuyStockViewTest(TestCase):
         }
         response = self.client.post(reverse("products:buyStock"), data = postData, follow=True)
 
-        self.assertTrue(response.context['myproducts'][0]['stock'] == STOCK_TO_BUY)
+        self.assertTrue(response.context['product'].stock == 0)
     
     def test_cant_buy_negative_stock(self):
 
@@ -232,7 +232,6 @@ class ProductSearchViewTests(TestCase):
                         } for prodName in prodNames]
         
         produtosCriados = self.create_products_and_return(productList)
-
 
         NUM_CHARS_FOR_QUERY = 5
         postData = {'name' : 'Chocolate'[:NUM_CHARS_FOR_QUERY]}
