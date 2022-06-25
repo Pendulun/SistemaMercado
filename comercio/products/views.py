@@ -99,8 +99,12 @@ def buyStock(request):
     else:
         try:
             stockToBuy = int(request.POST['stockToBuy'])
+
+            if stockToBuy < 1:
+                raise ValueError("Tentativa de comprar estoque não positivo")
+                
         except:
-            messages.error(request, "Digite apenas números inteiros no estoque!")
+            messages.error(request, "Digite apenas números inteiros positivos no estoque!")
             return HttpResponseRedirect(reverse("products:suppliers_of_product", kwargs={'pk':prodId}))
         else:
             product = Product.objects.get(pk=prodId)

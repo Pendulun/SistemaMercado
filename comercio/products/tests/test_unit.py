@@ -1,5 +1,6 @@
 from django.test import TestCase
 from ..models import Product
+from suppliers.models import Supplier
 from django.urls import reverse
 
 class ProductIndexViewTests(TestCase):
@@ -87,6 +88,74 @@ class ProductRegisterViewTests(TestCase):
         response = self.client.post(reverse("products:savenewproduct"), data = postData, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Complete corretamente todos os campos de cadastro!")
+
+class ProductBuyStockViewTest(TestCase):
+
+    def setUp(self):
+        self.produto = self.create_base_product()
+        self.supplier = self.create_base_supplier()
+    
+    def create_base_product(self):
+        prodName = "Chocolate"
+        prodPrice = 4.5
+        prodBrand = 'Lacta'
+        prodStock = 0
+        prodSold = 0
+        return Product.objects.create(name=prodName, price=prodPrice,
+                                            brand=prodBrand, stock=prodStock, sold=prodSold)
+    
+    def create_base_supplier(self):
+        supName = "Fornecedor Teste"
+        supTel = "(31) 12345-6789"
+        supCnpj = '1234567890'
+        supAddress = "Rua Teste"
+
+        return Supplier.objects.create(name=supName, telephone=supTel,
+                                            cnpj=supCnpj, address=supAddress)
+        
+    def test_can_buy_stock(self):
+
+        STOCK_TO_BUY = 5
+        postData = {"prodId": self.produto.id,
+                    "stockToBuy": STOCK_TO_BUY,
+                    'supplier': self.supplier.id          
+        }
+        response = self.client.post(reverse("products:buyStock"), data = postData, follow=True)
+
+        self.assertTrue(response.context['myproducts'][0]['stock'] == STOCK_TO_BUY)
+    
+    def test_cant_buy_negative_stock(self):
+
+        STOCK_TO_BUY = -1
+        postData = {"prodId": self.produto.id,
+                    "stockToBuy": STOCK_TO_BUY,
+                    'supplier': self.supplier.id          
+        }
+        response = self.client.post(reverse("products:buyStock"), data = postData, follow=True)
+
+        self.assertTrue(response.context['product'].stock == 0)
+    
+    def test_cant_buy_float_stock(self):
+
+        STOCK_TO_BUY = 1.5
+        postData = {"prodId": self.produto.id,
+                    "stockToBuy": STOCK_TO_BUY,
+                    'supplier': self.supplier.id          
+        }
+        response = self.client.post(reverse("products:buyStock"), data = postData, follow=True)
+
+        self.assertTrue(response.context['product'].stock == 0)
+
+    def test_cant_buy_str_stock(self):
+
+        STOCK_TO_BUY = 'a'
+        postData = {"prodId": self.produto.id,
+                    "stockToBuy": STOCK_TO_BUY,
+                    'supplier': self.supplier.id          
+        }
+        response = self.client.post(reverse("products:buyStock"), data = postData, follow=True)
+
+        self.assertTrue(response.context['product'].stock == 0)
     
 class ProductSearchViewTests(TestCase):
     
