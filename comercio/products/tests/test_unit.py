@@ -10,7 +10,7 @@ class ProductIndexViewTests(TestCase):
         """
         response = self.client.get(reverse("products:index"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Não existem produtos cadastrados.")
+        self.assertContains(response, "Não existem produtos cadastrados no sistema.")
         self.assertQuerysetEqual(response.context['myproducts'], [])
 
     def test_new_product_sent_to_index(self):
