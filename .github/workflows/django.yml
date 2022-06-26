@@ -28,4 +28,6 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
-        python comercio/manage.py test
+        python comercio/manage.py test comercio/suppliers/tests
+        python comercio/manage.py test comercio/products/tests
+        python comercio/manage.py test comercio/integration_tests
