@@ -1,36 +1,43 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset='utf-8'>
-    <title>Confirmar Deleção</title>
-</head>
-<body>
-    <form method="post">
-        {% csrf_token %}
-        <p>Tem certeza que quer deletar o Fornecedor com os seguintes dados:</p>
-        <table border="1">
-            <thead>
-                <th>Nome</th>
-                <th>CNPJ</th>
-                <th>Telefone</th>
-                <th>Endereço</th>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ object.name }}</td>
-                    <td>{{ object.cnpj }}</td>
-                    <td>{{ object.telephone }}</td>
-                    <td>{{ object.address }}</td>
-                </tr>
-            </tbody>
-        </table>
-        {{ form }}
-        <br>
-        <input type="submit" value="Confirmar">
-    </form>
-    <br>
-    <form action="{% url 'suppliers:index'%}" style="display: inline;">
-        <input type="submit" value="Voltar ao index" />
-    </form>
-</body>
+    <head>
+        <title>Confirmar Deleção</title>
+        <meta charset="UTF-8">
+        {% include 'suppliers/links.html' %}
+    </head>
+    <body>
+        <div class="w3-top w3-overflow">
+            {% include 'suppliers/menu.html' %}
+            <hr />
+            <div class="w3-container">
+                <h3 class="w3-text-green">Confirmar Deleção</h1>
+                <form method="post">
+                    {% csrf_token %}
+                    <p>Tem certeza que quer deletar o Fornecedor com os seguintes dados:</p>
+                    <table class="w3-table w3-striped w3-bordered">
+                        <thead class="w3-green">
+                            <th>Nome</th>
+                            <th>CNPJ</th>
+                            <th>Telefone</th>
+                            <th>Endereço</th>
+                        </thead>
+                        <tr class="w3-center">
+                            <td>{{ object.name }}</td>
+                            <td>{{ object.cnpj }}</td>
+                            <td>{{ object.telephone }}</td>
+                            <td>{{ object.address }}</td>
+                        </tr>
+                    </table>
+                    {{ form }}
+                    <div class="w3-row w3-margin-bottom w3-center">
+                        <input type="submit" value="Confirmar" class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top">
+                    </div>
+                </form>
+                <div class="w3-left">
+                    <a href="{% url 'suppliers:index' %}"
+                    class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top"><i class="fa fa-arrow-left"></i> Voltar ao index</a>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>

@@ -1,53 +1,87 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Comprar Estoque</title>
-</head>
-<body>
-    <h3>Fornecedores do Produto</h3>
-    {% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    {% if product.supplier_set.all%}
-    <form action="{% url 'products:buyStock'%}" method="POST">
-        {%csrf_token%}
-        <table border="1">
-            <thead>
-                <th>Nome</th>
-                <th>Telefone</th>
-                <th>CNPJ</th>
-                <th>Endereço</th>
-                <th>Comprar</th>
-            </thead>
-            {% for supplier in product.supplier_set.all%}
-                <tr>
-                    <td>{{supplier.name}}</td>
-                    <td>{{supplier.telephone}}</td>
-                    <td>{{supplier.cnpj}}</td>
-                    <td>{{supplier.address}}</td>
-                    <td>
-                        <input type="radio" name="supplier" id="supplier-{{supplier.id}}" value="{{supplier.id}}" required>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-        <br>
-        
-        <label for="estoqueComprado">Quantidade a comprar</label>
-        <input type="text" id='estoqueComprado' name="stockToBuy" placeholder="Quantidade a ser comprada" required>
-        <input type="hidden" name="prodId" value="{{product.id}}">
-        <input type="submit" value="Comprar">
-    </form>
-    
-    {%else%}
-        <p>Não existem Fornecedores para esse Produto</p>
-    {% endif %}
-    <p>
-        <a href="{% url 'products:index' %}">Voltar para o index</a>
-    </p>
-</body>
+    <head>
+        <title>Produtos</title>
+        <meta charset="UTF-8">
+        {% include 'products/links.html' %}
+    </head>
+    <body>
+        <div class="w3-top w3-overflow">
+            {% include 'products/menu.html' %}
+
+            <div class="w3-container">
+                {% if messages %}
+                <div class="w3-panel w3-pale-red">
+                    <ul class="w3-ul messages">
+                        {% for message in messages %}
+                        
+                        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                            {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <div class="w3-bar w3-green">
+                    <span class="w3-xlarge w3-bar-item ">Comprar Estoque</span>
+                </div>
+                
+                <div class="w3-container w3-border w3-border-xround">
+
+                    <br/>
+                    {% if product.supplier_set.all%}
+                    <form action="{% url 'products:buyStock'%}" method="POST">
+                        {%csrf_token%}
+                        <table class="w3-table w3-striped w3-bordered">
+                            <thead class="w3-light-green">
+                                <th>Nome</th>
+                                <th>Telefone</th>
+                                <th>CNPJ</th>
+                                <th>Endereço</th>
+                                <th>Comprar</th>
+                            </thead>
+                            {% for supplier in product.supplier_set.all%}
+                                <tr>
+                                    <td>{{supplier.name}}</td>
+                                    <td>{{supplier.telephone}}</td>
+                                    <td>{{supplier.cnpj}}</td>
+                                    <td>{{supplier.address}}</td>
+                                    <td>
+                                        <input type="radio" name="supplier" id="supplier-{{supplier.id}}" value="{{supplier.id}}" required>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                        <br>
+                        <div class="w3-row w3-margin-top">
+                            <div class="w3-col l6  w3-container">
+                                <label for="estoqueComprado">Quantidade a comprar</label><br>
+                                <input class="w3-input w3-border w3-border-xlarge" type="text" id='estoqueComprado' name="stockToBuy" placeholder="Quantidade a ser comprada" required>
+                                <input type="hidden" name="prodId" value="{{product.id}}">
+                            </div>
+                            <div class="w3-container w3-margin-bottom w3-center">
+                                <input type="submit" value="Comprar" class="w3-button w3-lime w3-border w3-round-xlarge w3-margin-top">
+                            </div>
+                        </div>
+                    </form>
+                    
+                    {%else%}
+                        <div class="w3-row">
+                            <div class="w3-col l3"><br /></div>
+                            <div class="w3-col l6">
+                                <div class="w3-panel w3-white w3-bottombar w3-border-amber w3-border">
+                                    <p>Não existem Fornecedores para esse Produto</p>
+                                </div>
+                            </div>
+                            <div class="w3-col l3"><br /></div>
+                        </div>
+                    {% endif %}
+                
+                </div>
+                <div class="w3-left">
+                    <a href="{% url 'products:index' %}"
+                    class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top"><i class="fa fa-arrow-left"></i> Voltar</a>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>

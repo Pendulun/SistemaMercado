@@ -1,88 +1,144 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset='utf-8'>
-        <title>Atualizar Produto</title>
+        <title>Produtos</title>
+        <meta charset="UTF-8">
+        {% include 'products/links.html' %}
     </head>
-<body>
+    <body>
+        <div class="w3-top w3-overflow">
+            {% include 'products/menu.html' %}
 
-    <h1>Atualizar Produto</h1>
+            <div class="w3-margin">
+                {% if messages %}
+                <div class="w3-panel w3-pale-red">
+                    <ul class="w3-ul messages">
+                        {% for message in messages %}
+                        
+                        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                            {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
 
-    {% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    
-    <form action="{% url 'products:updaterecord' myproduct.id %}" method="post">
-        {% csrf_token %}
+                <p>
+                    <b>Produto/Marca: </b>{{ myproduct.name }} / {{ myproduct.brand }}<br/>
+                    <b>Preço: </b>{{ myproduct.price }}<br/>
+                    <b>Qtde em Estoque: </b>{{ myproduct.stock }}<br/>
+                    <b>Qtde em Vendida: </b>{{ myproduct.sold }}<br/>
+                </p>
 
-        <label for="name_field"> Nome:</label><br>
-        <input name="name" value="{{ myproduct.name }}" id="name_field" placeholder="Digite um nome" required>
-        <br><br>
+                <div class="w3-container">
+                    <div class="w3-bar w3-green">
+                        <button class="w3-bar-item w3-button tablink" onclick="openAction(event, 'Atualizar')">Atualizar Produto</button>
+                        <button class="w3-bar-item w3-button tablink" onclick="openAction(event, 'Compra')">Compra de Produto</button>
+                        <button class="w3-bar-item w3-button tablink" onclick="openAction(event, 'Fornecedor')">Fornecedores do Produto</button>
+                    </div>
+                    
+                    <div id="Atualizar" class="w3-container w3-border acao" style="display:none">
+                        <form action="{% url 'products:updaterecord' myproduct.id %}" method="post">
+                            {% csrf_token %}
+                            <div class="w3-row w3-margin-top">
+                                <div class="w3-col l4 w3-container">
+                                    <label for="name_field">Nome:</label><br>
+                                    <input class="w3-input w3-border w3-round-xlarge" name="name" value="{{ myproduct.name }}" id="name_field" placeholder="Digite um nome" required>
+                                </div>
+                                <div class="w3-col l4 w3-container">
+                                    <label for="">Marca:</label><br>
+                                    <input class="w3-input w3-border w3-round-xlarge" name="brand" value="{{ myproduct.brand }}" id="brand_field" placeholder="Digite uma marca" required>
+                                </div>
+                                <div class="w3-col l4 w3-container">
+                                    <label for="price_field">Preço:</label><br>
+                                    <input class="w3-input w3-border w3-round-xlarge" name="price" value="{{ myproduct.price }}" id="price_field" placeholder="Digite um preço" required
+                                        style="width: 100%;">
+                                </div>
+                            </div>
+                            <div class="w3-row w3-margin-bottom w3-center">
+                                <input type="submit" value="Atualizar" class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top">
+                            </div>
+                            
+                        </form>
+                    </div>
+                    
+                    <div id="Compra" class="w3-container  w3-border w3-margin-bottom acao" style="display:none">
+                        <form action="{% url 'products:buyProduct' myproduct.id %}" method="post">
+                            {% csrf_token %}
+                            <div class="w3-row w3-margin-top">
+                                <div class="w3-col l4 w3-container">
+                                    <label for="quantidade_field">Quantidade:</label><br>
+                                    <input class="w3-input w3-border w3-round-xlarge" type="number" name="quantidade" id="quantidade_field" placeholder="Digite um número" required>
+                                </div>
+                            </div>
+                            <div class="w3-row w3-margin-bottom w3-center">
+                                <input type="submit" value="Comprar" class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top">
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div id="Fornecedor" class="w3-container w3-border acao" style="display:none">
+                        {%if myproduct.supplier_set.all %}
+                            <br/>
+                            <table class="w3-table w3-striped w3-bordered">
+                                <thead class="w3-light-green">
+                                    <th>Nome</th>
+                                    <th>Telefone</th>
+                                    <th>CNPJ</th>
+                                    <th>Endereço</th>
+                                </thead>
+                                {% for supplier in myproduct.supplier_set.all%}
+                                    <tr>
+                                        <td>{{supplier.name}}</td>
+                                        <td>{{supplier.telephone}}</td>
+                                        <td>{{supplier.cnpj}}</td>
+                                        <td>{{supplier.address}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% else%}
+                            <div class="w3-row">
+                                <div class="w3-col l3"><br /></div>
+                                <div class="w3-col l6">
+                                    <div class="w3-panel w3-white w3-bottombar w3-border-amber w3-border">
+                                        <p>Não existem Fornecedores para esse Produto</p>
+                                    </div>
+                                </div>
+                                <div class="w3-col l3"><br /></div>
+                            </div>
+                        {% endif %}
+                        <br>
+                        {% if myproduct.supplier_set.all %}
+                        <form action="{% url 'products:suppliers_of_product' myproduct.id%}">
+                            <div class="w3-row w3-margin-bottom w3-center">
+                                <input type="submit" name="comprarEstoque" value="Comprar Estoque" class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top">
+                            </div>
+                        </form>
+                        {% else%}
+                            <p>Para comprar estoque, <a href="{% url 'suppliers:index' %}">associe um Fornecedor à esse Produto</a></p>
+                        {% endif %}
+                    </div>
+                </div>
 
-        <label for="">Marca:</label><br>
-        <input name="brand" value="{{ myproduct.brand }}" id="brand_field" placeholder="Digite uma marca" required>
-        <br><br>
-
-        <label for="price_field">Preço:</label><br>
-        <input name="price" value="{{ myproduct.price }}" id="price_field" placeholder="Digite um preço" required>
-        <br><br>
-
-        <label for="stock_field">Estoque:</label><br>
-        <span id="stock_field">{{ myproduct.stock }}</span>
-        <br><br>
+                <p>
+                    <a href="{% url 'products:index' %}" class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top"><i class="fa fa-arrow-left"></i> Voltar</a>
+                </p>
+                
+            </div> 
         
-        <label for="sold_field">Vendidos:</label><br>
-        <span id="sold_field">{{ myproduct.sold }}</span>
-        <br><br>
-        
-        <input type="submit" value="Atualizar">
-    </form>
-
-    <h3>Compra de Produto</h3>
-    <form action="{% url 'products:buyProduct' myproduct.id %}" method="post">
-        {% csrf_token %}
-        <label for="">Quantidade:</label><br>
-        <input type="text" name="quantidade" id="quantidade_field" placeholder="Digite um número" required>
-        <br><br>
-
-        <input type="submit" value="Comprar">
-    </form>
-
-    <h3>Fornecedores do Produto</h3>
-    {%if myproduct.supplier_set.all %}
-        <table border="1">
-            <thead>
-                <th>Nome</th>
-                <th>Telefone</th>
-                <th>CNPJ</th>
-                <th>Endereço</th>
-            </thead>
-            {% for supplier in myproduct.supplier_set.all%}
-                <tr>
-                    <td>{{supplier.name}}</td>
-                    <td>{{supplier.telephone}}</td>
-                    <td>{{supplier.cnpj}}</td>
-                    <td>{{supplier.address}}</td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% else%}
-        <p>Não existem Fornecedores para esse Produto</p>
-    {% endif %}
-    <br>
-    {% if myproduct.supplier_set.all %}
-    <form action="{% url 'products:suppliers_of_product' myproduct.id%}">
-        <input type="submit" name="comprarEstoque" value="Comprar Estoque">
-    </form>
-    {% else%}
-        <p>Para comprar estoque, <a href="{% url 'suppliers:index' %}">associe um Fornecedor à esse Produto</a></p>
-    {% endif %}
-    <p>
-        <a href="{% url 'products:index' %}">Voltar para o index</a>
-    </p>
-</body>
+        </div>
+    </body>
+    <script>
+        function openAction(evt, acaoName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("acao");
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < x.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" w3-indigo", "");
+            }
+            document.getElementById(acaoName).style.display = "block";
+            evt.currentTarget.className += " w3-indigo";
+        }
+    </script>
 </html>

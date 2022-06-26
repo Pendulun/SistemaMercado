@@ -1,47 +1,68 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Remover Produto de Fornecedor</title>
-</head>
-<body>
-    <h1>Remover Produto de Fornecedor</h1>
-    {% if supplier.products.all %}
-    <form action="{% url 'suppliers:unregister_products_to_supplier' %}" method="POST">
-        {% csrf_token%}
-        <table border="1">
-            <thead>
-                <th>Id</th>
-                <th>Nome</th>
-                <th>Preço</th>
-                <th>Marca</th>
-                <th>Estoque</th>
-                <th>Vendidos</th>
-                <th>Selecionar</th>
-            </thead>
-                {% for x in supplier.products.all%}
-                    <tr>
-                        <td>{{x.id}}</td>
-                        <td>{{x.name}}</td>
-                        <td>{{x.price}}</td>
-                        <td>{{x.brand}}</td>
-                        <td>{{x.stock}}</td>
-                        <td>{{x.sold}}</td>
-                        <td>
-                            <input type="checkbox" name="checked-{{forloop.counter0}}" id="checked-{{forloop.counter0}}" value="{{x.id}}">
-                        </td>
-                    </tr>
-                {% endfor %}
-        </table>
-        <br>
-        <input type="hidden" name="supId" value="{{supplier.id}}">
-        <input type="submit" name="remover" id="remover" value="Remover Selecionados">
-    </form>
-    {% else %}
-        <p>Não existem produtos cadastrados para esse Fornecedor.</p>
-    {% endif %}
-    <br>
-    <form action="{% url 'suppliers:index'%}" style="display: inline;">
-        <input type="submit" value="Voltar ao index" />
-    </form>
-</body>
+    <head>
+        <title>Fornecedores</title>
+        <meta charset="UTF-8">
+        {% include 'suppliers/links.html' %}
+    </head>
+    <body>
+        <div class="w3-top w3-overflow">
+            {% include 'suppliers/menu.html' %}
+            <div class="w3-container">
+
+                <h3 class="w3-text-green">Remover Produto de Fornecedor</h1>
+                {% if supplier.products.all %}
+                <form action="{% url 'suppliers:unregister_products_to_supplier' %}" method="POST">
+                    {% csrf_token%}
+                    <table class="w3-table w3-striped w3-bordered">
+                        <thead class="w3-green">
+                            <th>Id</th>
+                            <th>Nome</th>
+                            <th>Preço</th>
+                            <th>Marca</th>
+                            <th>Estoque</th>
+                            <th>Vendidos</th>
+                            <th>Selecionar</th>
+                        </thead>
+                        <tbody>
+                            {% for x in supplier.products.all%}
+                                <tr>
+                                    <td>{{x.id}}</td>
+                                    <td>{{x.name}}</td>
+                                    <td>{{x.price}}</td>
+                                    <td>{{x.brand}}</td>
+                                    <td>{{x.stock}}</td>
+                                    <td>{{x.sold}}</td>
+                                    <td>
+                                        <input type="checkbox" name="checked-{{forloop.counter0}}" id="checked-{{forloop.counter0}}" value="{{x.id}}">
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <br>
+                    <input type="hidden" name="supId" value="{{supplier.id}}">
+                    <div class="w3-row w3-margin-bottom w3-center">
+                        <input type="submit" name="remover" id="remover" value="Remover Selecionados" class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top">
+                    </div>
+                </form>
+                {% else %}
+                    <div class="w3-row">
+                        <div class="w3-col l3"><br /></div>
+                        <div class="w3-col l6">
+                            <div class="w3-panel w3-white w3-bottombar w3-border-amber w3-border">
+                                <p>Não existem produtos cadastrados para esse Fornecedor.</p>
+                            </div>
+                        </div>
+                        <div class="w3-col l3"><br /></div>
+                    </div>
+                {% endif %}
+                <br>
+                <div class="w3-left">
+                    <a href="{% url 'suppliers:index' %}"
+                    class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top"><i class="fa fa-arrow-left"></i> Voltar ao index</a>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
