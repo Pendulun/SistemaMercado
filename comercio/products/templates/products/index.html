@@ -1,46 +1,72 @@
-{% include 'products/base.html' %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Produtos</title>
+        <meta charset="UTF-8">
+        {% include 'products/links.html' %}
+    </head>
+    <body>
+        <div class="w3-top w3-overflow">
+            {% include 'products/menu.html' %}
+            <hr />
+            <div class="w3-container">
 
-<div class="w3-margin">
+                {% if myproducts %}
+                    <div class="w3-row w3-container w3-margin-bottom">
+                        <form action="{% url 'products:searchproduct' %}" method="post">
+                            <div class="w3-col l10 w3-container w3-center w3-padding">       
+                                {% csrf_token %}
+                                <input class="w3-input w3-border w3-round-xlarge" type="text" name="name" placeholder="Pesquisar pelo nome do Produto">
+                            </div>
+                            <div class="w3-col l2 w3-center w3-padding">
+                                <input type="submit" value="Pesquisar" class="w3-button w3-indigo w3-border w3-round-xlarge" >
+                            </div>
+                        </form>
+                    </div>
+                    <table class="w3-table w3-striped w3-bordered">
+                        <thead class="w3-green">
+                            <th></th>
+                            <th>Id</th>
+                            <th>Nome</th>
+                            <th>Marca</th>
+                            <th>Preço</th>
+                            <th>Estoque</th>
+                            <th>Vendidos</th>
+                            <th></th>
+                        </thead>
+                        {% for x in myproducts %}
+                        <tr class="w3-center">
+                            <td><a href="{% url 'products:update' x.id %}"><i class="fa fa-pencil w3-text-indigo"></i> Ações</a></td>
+                            <td>{{ x.id }}</td>
+                            <td>{{ x.name }}</td>
+                            <td>{{ x.brand }}</td>
+                            <td>{{ x.price }}</td>
+                            <td>{{ x.stock }}</td>
+                            <td>{{ x.sold }}</td>
+                            <td><a href="{% url 'products:delete' x.id %}" ><i class="fa fa-trash w3-text-red"></i></a></td>
+                            
+                        </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <div class="w3-row">
+                        <div class="w3-col l3"><br /></div>
+                        <div class="w3-col l6">
+                            <div class="w3-panel w3-white w3-bottombar w3-border-amber w3-border">
+                                <p>Não existem produtos cadastrados no sistema.</p>
+                            </div>
+                        </div>
+                        <div class="w3-col l3"><br /></div>
+                    </div>
+                {% endif %}
 
-    <h1 class='w3-text-green'>Produtos</h1>
 
-    <form action="{% url 'products:searchproduct' %}" method="post">
-        {% csrf_token %}
-        Pesquisar produto pelo nome:<br>
-        <input type="text" name="name" placeholder="Nome do Produto">
-        <input type="submit" value="Pesquisar" class="w3-button w3-lime w3-border w3-round-xlarge w3-tiny" >
-    </form>
-
-    <p>
-        <a href="{% url 'products:productregistry' %}" class="w3-button w3-lime w3-border w3-round-xlarge w3-margin-top w3-right">Adicionar Produto</a><br/><br/><br/>
-    </p>
-
-    {% if myproducts %}
-        <table class="w3-table w3-striped w3-bordered">
-            <thead class="w3-light-green">
-                <th>Id</th>
-                <th>Nome</th>
-                <th>Marca</th>
-                <th>Preço</th>
-                <th>Estoque</th>
-                <th>Vendidos</th>
-                <th></th>
-            </thead>
-            {% for x in myproducts %}
-            <tr class="w3-center">
-                <td><a href="{% url 'products:update' x.id %}">{{ x.id }}</a></td>
-                <td>{{ x.name }}</td>
-                <td>{{ x.brand }}</td>
-                <td>{{ x.price }}</td>
-                <td>{{ x.stock }}</td>
-                <td>{{ x.sold }}</td>
-                <td><a href="{% url 'products:delete' x.id %}"  >Deletar</a></td>
-            </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p>Não existem produtos cadastrados.</p>
-    {% endif %}
-    <br>
-</div>
+                <div class="w3-col l6 w3-right w3-container w3-padding">
+                    <a href="{% url 'products:productregistry' %}" class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top w3-right">
+                        <i class="fa fa-plus w3-text-white"></i> Adicionar produto</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
 

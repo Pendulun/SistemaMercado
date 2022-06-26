@@ -1,33 +1,62 @@
-{% include 'products/base.html' %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Produtos</title>
+        <meta charset="UTF-8">
+        {% include 'products/links.html' %}
+    </head>
+    <body>
+        <div class="w3-top w3-overflow">
+            {% include 'products/menu.html' %}
 
-<div class="w3-margin">
+            <div class="w3-container">
+                {% if messages %}
+                <div class="w3-panel w3-pale-red">
+                    <ul class="w3-ul messages">
+                        {% for message in messages %}
+                        
+                        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                            {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
 
-  <h1 class='w3-text-green'>Adicionar Produto</h1>
-
-
-  {% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-
-  <form action="{% url 'products:savenewproduct' %}" method="post">
-  {% csrf_token %}
-  Nome:<br>
-  <input name="name">
-  <br><br>
-  Marca:<br>
-  <input name="brand">
-  <br><br>
-  Preço:<br>
-  <input name="price">
-  <br><br>
-  <input type="submit" value="Cadastrar" class="w3-button w3-lime w3-border w3-round-xlarge w3-margin-top">
-  <p>
-      <a href="{% url 'products:index' %}" class="w3-button w3-red w3-border w3-round-xlarge w3-margin-top">Voltar</a>
-  </p>
-  </form>
-
-</div>
+                <div class="w3-bar w3-green">
+                    <span class="w3-xlarge w3-bar-item ">Adicione um novo produto</span>
+                </div>
+                
+                <div class="w3-container w3-border w3-border-xround">
+                    <form action="{% url 'products:savenewproduct' %}" method="post">
+                        {% csrf_token %}
+                        <div class="w3-row w3-margin-top">
+                            <div class="w3-col l6 w3-container">
+                                <label>Nome:</label><br>
+                                <input class="w3-input w3-border w3-border-xlarge" name="name" 
+                                    id="name_field" placeholder="Digite um nome" required>
+                            </div>
+                            <div class="w3-col l6">
+                                <label>Preço:</label><br>
+                                <input class="w3-input w3-border w3-border-xlarge" name="price"
+                                    id="price_field" placeholder="Digite um preço" required>
+                            </div>
+                        </div>
+                        <div class="w3-row w3-margin-top">
+                            <div class="w3-col l6  w3-container">
+                                <label>Marca:</label><br>
+                                <input class="w3-input w3-border w3-border-xlarge" name="brand"
+                                    id="brand_field" placeholder="Digite o nome da marca do produto" required>
+                            </div>
+                        </div>
+                        <div class="w3-container w3-margin-bottom w3-center">
+                            <input type="submit" value="Cadastrar" class="w3-button w3-lime w3-border w3-round-xlarge w3-margin-top">
+                        </div>
+                    </form>
+                </div>
+                <div class="w3-left">
+                    <a href="{% url 'products:index' %}"
+                    class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top"><i class="fa fa-arrow-left"></i> Voltar</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
