@@ -1,25 +1,43 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset='utf-8'>
-    <title>Cadastro de Fornecedor</title>
-</head>
-<body>
-    <h1>Cadastro de Fornecedor</h1>
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Cadastrar">
-    </form>
-    <p>
-        <a href="{% url 'suppliers:index' %}">Voltar para o index</a>
-    </p>
-</body>
+    <head>
+        <title>Cadastro de Fornecedor</title>
+        <meta charset="UTF-8">
+        {% include 'suppliers/links.html' %}
+    </head>
+    <body>
+        <div class="w3-top w3-overflow">
+            {% include 'suppliers/menu.html' %}
+
+            <div class="w3-container">
+                {% if messages %}
+                <div class="w3-panel w3-pale-red">
+                    <ul class="w3-ul messages">
+                        {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                            {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <div class="w3-bar w3-green">
+                    <span class="w3-xlarge w3-bar-item ">Cadastro de Fornecedor</span>
+                </div>
+                
+                <div class="w3-container w3-border w3-border-xround">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="w3-container w3-margin-bottom w3-center">
+                            <input type="submit" value="Cadastrar" class="w3-button w3-lime w3-border w3-round-xlarge w3-margin-top">
+                        </div>
+                    </form>
+                </div>
+                <div class="w3-left">
+                    <a href="{% url 'suppliers:index' %}"
+                    class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top"><i class="fa fa-arrow-left"></i> Voltar ao index</a>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>

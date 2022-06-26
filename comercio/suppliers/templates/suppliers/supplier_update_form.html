@@ -1,58 +1,123 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset='utf-8'>
-    <title>Atualizar Fornecedor</title>
-</head>
-<body>
-    <h1>Atualizar Fornecedor</h1>
-    <form method="post"> 
-        {% csrf_token %} 
-        {{ form.as_p }} 
+    <head>
+        <title>Fornecedor</title>
+        <meta charset="UTF-8">
+        {% include 'suppliers/links.html' %}
+    </head>
+    <body>
+        <div class="w3-top w3-overflow">
+            {% include 'suppliers/menu.html' %}
 
-        <h4>Produtos cadastrados a esse Fornecedor</h4>
-        {% if object.products.all %}
-            
-            <table border="1">
-                <thead>
-                    <th>Id</th>
-                    <th>Nome</th>
-                    <th>Preço</th>
-                    <th>Marca</th>
-                    <th>Estoque</th>
-                    <th>Vendidos</th>
-                </thead>
-                {% for product in object.products.all%}
-                    <tr>
-                        <td>{{product.id}}</td>
-                        <td>{{product.name}}</td>
-                        <td>{{product.price}}</td>
-                        <td>{{product.brand}}</td>
-                        <td>{{product.stock}}</td>
-                        <td>{{product.sold}}</td>
-                    </tr>
-                {% endfor %}
-            </table>
-        {%else %}
-            <p>Não existem Produtos associados a esse Fornecedor</p>
-        {% endif %}
-        <br>
-        <input type="submit" value="Atualizar Fornecedor"> 
-    </form> 
-    <br>
-    <form action="{% url 'suppliers:product_to_supplier'%}" style="display: inline;">
-        <input type="submit" value="Cadastrar Novo Produto" />
-        <input type="hidden" name="supplierId" id="supplierId" value="{{object.id}}">
-    </form>
-    <br><br>
-    <form action="{% url 'suppliers:remove_product_of_supplier'%}" style="display: inline;">
-        <input type="submit" value="Desassociar um Produto" />
-        <input type="hidden" name="supplierId" id="supplierId" value="{{object.id}}">
-    </form>
-    <br><br>
-    <form action="{% url 'suppliers:index'%}" style="display: inline;">
-        <input type="submit" value="Voltar ao index" />
-    </form>
-    
-</body>
+            <div class="w3-margin">
+                {% if messages %}
+                <div class="w3-panel w3-pale-red">
+                    <ul class="w3-ul messages">
+                        {% for message in messages %}
+                        
+                        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                            {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <p>
+                    <b>Fornecedor: </b>{{ supplier.name }} ({{ supplier.cnpj }})<br/>
+                    <b>Telefone: </b>{{ supplier.telephone }}<br/>
+                    <b>Endreço: </b>{{ supplier.address }}<br/>
+                </p>
+
+                <div class="w3-container">
+                    <div class="w3-bar w3-green">
+                        <button class="w3-bar-item w3-button tablink" onclick="openAction(event, 'Atualizar')">Atualizar Fornecedor</button>
+                        <button class="w3-bar-item w3-button tablink" onclick="openAction(event, 'Produtos')">Produtos do Fornecedor</button>
+                    </div>
+                    
+                    <div id="Atualizar" class="w3-container w3-border acao" style="display:none">
+                        <form method="post"> 
+                            {% csrf_token %} 
+                            {{ form.as_p }} 
+                            <br>
+                            <div class="w3-row w3-margin-bottom w3-center">
+                                <input type="submit" value="Atualizar Fornecedor" class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top">
+                            </div>
+                        </form> 
+                    </div>
+                    
+                    <div id="Produtos" class="w3-container w3-border acao" style="display:none">
+                        <p>Produtos cadastrados a esse Fornecedor</p>
+                        {% if object.products.all %}
+                            
+                            <table class="w3-table w3-striped w3-bordered">
+                                <thead class="w3-light-green">
+                                    <th>Id</th>
+                                    <th>Nome</th>
+                                    <th>Preço</th>
+                                    <th>Marca</th>
+                                    <th>Estoque</th>
+                                    <th>Vendidos</th>
+                                </thead>
+                                {% for product in object.products.all%}
+                                    <tr>
+                                        <td>{{product.id}}</td>
+                                        <td>{{product.name}}</td>
+                                        <td>{{product.price}}</td>
+                                        <td>{{product.brand}}</td>
+                                        <td>{{product.stock}}</td>
+                                        <td>{{product.sold}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            <br/>
+                            <div class="w3-container w3-margin-bottom w3-center">
+                                <form action="{% url 'suppliers:remove_product_of_supplier'%}" style="display: inline;">
+                                    <input type="submit" value="Desassociar um Produto"  class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top" />
+                                    <input type="hidden" name="supplierId" id="supplierId" value="{{object.id}}">
+                                </form>
+                                <form action="{% url 'suppliers:product_to_supplier'%}" style="display: inline;">
+                                    <input type="submit" value="Cadastrar Novo Produto"  class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top" />
+                                    <input type="hidden" name="supplierId" id="supplierId" value="{{object.id}}" >
+                                </form>
+                            </div>
+                        {%else %}
+                            <div class="w3-row">
+                                <div class="w3-col l3"><br /></div>
+                                <div class="w3-col l6">
+                                    <div class="w3-panel w3-white w3-bottombar w3-border-amber w3-border">
+                                        <p>Não existem produtos associados para esse Fornecedor.</p>
+                                    </div>
+                                </div>
+                                <div class="w3-col l3"><br /></div>
+                            </div>
+                            <div class="w3-container w3-margin-bottom w3-center">
+                                <form action="{% url 'suppliers:product_to_supplier'%}" style="display: inline;">
+                                    <input type="submit" value="Cadastrar Novo Produto"  class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top" />
+                                    <input type="hidden" name="supplierId" id="supplierId" value="{{object.id}}" >
+                                </form>
+                            </div>
+                        {% endif %}
+                        <br>
+                    </div>
+                </div>
+                <p>
+                    <a href="{% url 'suppliers:index' %}" class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top"><i class="fa fa-arrow-left"></i> Voltar</a>
+                </p>
+            </div> 
+        </div>
+    </body>
+    <script>
+        function openAction(evt, acaoName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("acao");
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < x.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" w3-indigo", "");
+            }
+            document.getElementById(acaoName).style.display = "block";
+            evt.currentTarget.className += " w3-indigo";
+        }
+    </script>
 </html>
