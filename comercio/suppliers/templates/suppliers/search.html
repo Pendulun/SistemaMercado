@@ -1,38 +1,55 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset='utf-8'>
-    <title>Pesquisa de Fornecedor</title>
-</head>
-<body>
-    <h1>Fornecedores Encontrados</h1>
-    {% if suppliers_list %}
-    <table border="1">
-        <thead>
-            <th>Id</th>
-            <th>Nome</th>
-            <th>Telefone</th>
-            <th>CNPJ</th>
-            <th>Endereço</th>
-            <th>Ação</th>
-        </thead>
-        {% for x in suppliers_list %}
-        <tr>
-            <td><a href="{% url 'suppliers:update' x.id %}">{{ x.id }}</a></td>
-            <td>{{ x.name }}</td>
-            <td>{{ x.telephone }}</td>
-            <td>{{ x.cnpj }}</td>
-            <td>{{ x.address }}</td>
-            <td><a href="{% url 'suppliers:delete' x.id %}">Deletar</a></td>
-        </tr>
-    {% endfor %}
-    </table>
-    {% else %}
-        <p>Não existem fornecedores cadastrados com o nome pesquisado.</p>
-    {% endif %}
-
-    <p>
-        <a href="{% url 'suppliers:index' %}">Voltar para o index</a>
-    </p>
-</body>
+    <head>
+        <title>Pesquisa de Fornecedor</title>
+        <meta charset="UTF-8">
+        {% include 'suppliers/links.html' %}
+    </head>
+    <body>
+        <div class="w3-top w3-overflow">
+            {% include 'suppliers/menu.html' %}
+            <hr />
+            <div class="w3-container">
+                <h3 class="w3-text-green">Fornecedores Encontrados</h1>
+                {% if suppliers_list %}
+                    <table class="w3-table w3-striped w3-bordered">
+                        <thead class="w3-green">
+                            <th></th>
+                            <th>Id</th>
+                            <th>Nome</th>
+                            <th>Telefone</th>
+                            <th>CNPJ</th>
+                            <th>Endereço</th>
+                            <th>Ação</th>
+                        </thead>
+                        {% for x in suppliers_list %}
+                        <tr class="w3-center">
+                            <td><a href="{% url 'suppliers:update' x.id %}"><i class="fa fa-pencil w3-text-indigo"></i> Ações</a></td>
+                            <td>{{ x.id }}</td>
+                            <td>{{ x.name }}</td>
+                            <td>{{ x.telephone }}</td>
+                            <td>{{ x.cnpj }}</td>
+                            <td>{{ x.address }}</td>
+                            <td><a href="{% url 'suppliers:delete' x.id %}">Deletar</a></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <div class="w3-row">
+                        <div class="w3-col l3"><br /></div>
+                        <div class="w3-col l6">
+                            <div class="w3-panel w3-white w3-bottombar w3-border-amber w3-border">
+                                <p>Não existem fornecedores cadastrados com o nome pesquisado.</p>
+                            </div>
+                        </div>
+                        <div class="w3-col l3"><br /></div>
+                    </div>
+                {% endif %}
+                <div class="w3-left">
+                    <a href="{% url 'suppliers:index' %}"
+                    class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top"><i class="fa fa-arrow-left"></i> Voltar ao index</a>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>

@@ -30,12 +30,12 @@
 
                 <div class="w3-container">
                     <div class="w3-bar w3-green">
-                        <button class="w3-bar-item w3-button tablink w3-indigo" onclick="openAction(event, 'Atualizar')">Atualizar Produto</button>
+                        <button class="w3-bar-item w3-button tablink" onclick="openAction(event, 'Atualizar')">Atualizar Produto</button>
                         <button class="w3-bar-item w3-button tablink" onclick="openAction(event, 'Compra')">Compra de Produto</button>
                         <button class="w3-bar-item w3-button tablink" onclick="openAction(event, 'Fornecedor')">Fornecedores do Produto</button>
                     </div>
                     
-                    <div id="Atualizar" class="w3-container w3-border acao">
+                    <div id="Atualizar" class="w3-container w3-border acao" style="display:none">
                         <form action="{% url 'products:updaterecord' myproduct.id %}" method="post">
                             {% csrf_token %}
                             <div class="w3-row w3-margin-top">

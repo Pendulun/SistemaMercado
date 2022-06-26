@@ -1,47 +1,66 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Cadastro de Produto em Fornecedor</title>
-</head>
-<body>
-    <h1>Cadastro de Produto em Fornecedor</h1>
-    {% if myproducts %}
-    <form action="{% url 'suppliers:register_products_to_supplier' %}" method="POST">
-        {% csrf_token%}
-        <table border="1">
-            <thead>
-                <th>Id</th>
-                <th>Nome</th>
-                <th>Preço</th>
-                <th>Marca</th>
-                <th>Estoque</th>
-                <th>Vendidos</th>
-                <th>Selecionar</th>
-            </thead>
-                {% for x in myproducts%}
-                    <tr>
-                        <td>{{x.id}}</td>
-                        <td>{{x.name}}</td>
-                        <td>{{x.price}}</td>
-                        <td>{{x.brand}}</td>
-                        <td>{{x.stock}}</td>
-                        <td>{{x.sold}}</td>
-                        <td>
-                            <input type="checkbox" name="checked-{{forloop.counter0}}" id="checked-{{forloop.counter0}}" value="{{x.id}}">
-                        </td>
-                    </tr>
-                {% endfor %}
-        </table>
-        <input type="hidden" name="supId" value="{{supplierId}}">
-        <br>
-        <input type="submit" name="cadastrar" id="cadastrar" value="Cadastrar Selecionados">
-    </form>
-    {% else %}
-        <p>Não existem produtos cadastrados e que sejam diferentes dos que já estejam associados ao Fornecedor.</p>
-    {% endif %}
-    <br>
-    <form action="{% url 'suppliers:index'%}" style="display: inline;">
-        <input type="submit" value="Voltar ao index" />
-    </form>
-</body>
+    <head>
+        <title>Cadastro de Produto em Fornecedor</title>
+        <meta charset="UTF-8">
+        {% include 'suppliers/links.html' %}
+    </head>
+    <body>
+        <div class="w3-top w3-overflow">
+            {% include 'suppliers/menu.html' %}
+            <div class="w3-container">
+
+                <h3 class="w3-text-green">Cadastro de Produto em Fornecedor</h1>
+                {% if myproducts %}
+                <form action="{% url 'suppliers:register_products_to_supplier' %}" method="POST">
+                    {% csrf_token%}
+                    <table class="w3-table w3-striped w3-bordered">
+                        <thead class="w3-green">
+                            <th>Id</th>
+                            <th>Nome</th>
+                            <th>Preço</th>
+                            <th>Marca</th>
+                            <th>Estoque</th>
+                            <th>Vendidos</th>
+                            <th>Selecionar</th>
+                        </thead>
+                            {% for x in myproducts%}
+                                <tr>
+                                    <td>{{x.id}}</td>
+                                    <td>{{x.name}}</td>
+                                    <td>{{x.price}}</td>
+                                    <td>{{x.brand}}</td>
+                                    <td>{{x.stock}}</td>
+                                    <td>{{x.sold}}</td>
+                                    <td>
+                                        <input type="checkbox" name="checked-{{forloop.counter0}}" id="checked-{{forloop.counter0}}" value="{{x.id}}">
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                    </table>
+                    <input type="hidden" name="supId" value="{{supplierId}}">
+                    <br>
+                    <div class="w3-row w3-margin-bottom w3-center">
+                        <input type="submit" name="cadastrar" id="cadastrar" value="Cadastrar Selecionados" class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top">
+                    </div>
+                </form>
+                {% else %}
+                    <div class="w3-row">
+                        <div class="w3-col l3"><br /></div>
+                        <div class="w3-col l6">
+                            <div class="w3-panel w3-white w3-bottombar w3-border-amber w3-border">
+                                <p>Não existem produtos cadastrados e que sejam diferentes dos que já estejam associados ao Fornecedor.</p>
+                            </div>
+                        </div>
+                        <div class="w3-col l3"><br /></div>
+                    </div>
+                {% endif %}
+                <br>
+                <div class="w3-left">
+                    <a href="{% url 'suppliers:index' %}"
+                    class="w3-button w3-indigo w3-border w3-round-xlarge w3-margin-top"><i class="fa fa-arrow-left"></i> Voltar</a>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
