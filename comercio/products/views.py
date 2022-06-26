@@ -2,6 +2,7 @@ from json import load
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from .models import Product
+from suppliers.models import Supplier
 from django.urls import reverse
 from django.contrib import messages
 
@@ -92,18 +93,35 @@ def buyStock(request):
     supToBuy = 0
     stockToBuy = 0
     try:
-        supToBuy = request.POST['supplier']
+        supToBuy = int(request.POST['supplier'])
     except:
         messages.error(request, "Selecione um Fornecedor para comprar")
         return HttpResponseRedirect(reverse("products:suppliers_of_product", kwargs={'pk':prodId}))
     else:
+        product = Product.objects.get(pk=prodId)
+
+        if product.supplier_set:
+            suppliers_of_product = product.supplier_set.all()
+            ids_suppliers_of_product = set(map(lambda sup: sup.id, suppliers_of_product))
+
+            if supToBuy not in ids_suppliers_of_product:
+                messages.error(request, "Não é possível comprar estoque de um fornecedor não associado")
+                return HttpResponseRedirect(reverse("products:suppliers_of_product", kwargs={'pk':prodId}))
+
+        else:
+            messages.error(request, "Não é possível comprar estoque de um fornecedor não associado")
+            return HttpResponseRedirect(reverse("products:suppliers_of_product", kwargs={'pk':prodId}))
+
         try:
             stockToBuy = int(request.POST['stockToBuy'])
+
+            if stockToBuy < 1:
+                raise ValueError("Tentativa de comprar estoque não positivo")
+                
         except:
-            messages.error(request, "Digite apenas números inteiros no estoque!")
+            messages.error(request, "Digite apenas números inteiros positivos no estoque!")
             return HttpResponseRedirect(reverse("products:suppliers_of_product", kwargs={'pk':prodId}))
         else:
-            product = Product.objects.get(pk=prodId)
             product.stock += stockToBuy
             product.save()
             return HttpResponseRedirect(reverse('products:index'))
