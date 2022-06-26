@@ -41,7 +41,7 @@
                             <td>{{ x.telephone }}</td>
                             <td>{{ x.cnpj }}</td>
                             <td>{{ x.address }}</td>
-                            <td><a href="{% url 'suppliers:delete' x.id %}">Deletar</a></td>
+                            <td><a href="{% url 'suppliers:delete' x.id %}"><i class="fa fa-trash w3-text-red"></i></a></td>
                         </tr>
                         {% endfor %}
                     </table>
